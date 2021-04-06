@@ -17,7 +17,7 @@ class Object(Widget):
         self.vel = kw['vel']
         self.size = kw['size']
         self.COORDS_small = []
-
+        
         self.interect_small = i.Interaction_small(x0=self.pos[0],
                                                   vx0=self.vel[0],
                                                   y0=self.pos[1],
@@ -32,8 +32,8 @@ class Object(Widget):
     def draw_small(self):
         self.canvas.add(self.color)
         self.ellipse = Ellipse(pos=self.pos, size=self.size)
-        self.ellipse_c = Ellipse(pos=(250, 250), size=(20, 20))
         self.canvas.add(self.ellipse)
+        self.ellipse_c = Ellipse(pos=(250, 250), size=(20, 20))
         self.canvas.add(self.ellipse_c)
 
     def move_small(self, k):
