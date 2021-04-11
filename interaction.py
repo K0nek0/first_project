@@ -1,11 +1,12 @@
 import numpy as np
 from scipy.integrate import odeint
+from random import randint
 
 G = 6.67 * 10**(-11)
 ae = 149.6 * 10**9
 m_c = 1.9885 * 10**30
-x_c = 0
-y_c = 0
+x_c = randint(0, 2*ae)
+y_c = randint(0, 2*ae)
 
 T = 365
 t_end = 24 * 3600 * 365
