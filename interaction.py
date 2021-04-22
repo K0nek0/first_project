@@ -10,8 +10,9 @@ y_c = 0
 T = 365
 t_end = 24 * 3600 * 365
 t = np.linspace(0, t_end, T)
+k = 200
 
-class Interaction_small:
+class Interaction:
     def __init__(self, x0, vx0, y0, vy0):
         self.x0 = x0
         self.vx0 = vx0
