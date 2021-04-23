@@ -7,6 +7,7 @@ from kivy.clock import Clock
 from kivy.uix.button import Button
 from random import randint
 
+
 class Object(Widget):
     def __init__(self, **kw):
         super(Object, self).__init__()
@@ -113,5 +114,4 @@ class PainterWidget(Widget):
 class PlanetApp(App):
     def build(self):
         return PainterWidget()
-
 PlanetApp().run()
