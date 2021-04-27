@@ -1,37 +1,43 @@
 import interaction as i
 from kivy.app import App
 from kivy.uix.widget import Widget
-from kivy.graphics import Ellipse, Color, Line
+from kivy.graphics import Ellipse, Color
 from kivy.vector import Vector
 from kivy.clock import Clock
-from kivy.uix.button import Button
+from kivy.lang import Builder
 from random import randint
+
+Builder.load_file('center.kv')
 
 
 class Object(Widget):
-    def __init__(self, **kw):
+    def __init__(self, key, **kw):
         super(Object, self).__init__()
+        if key == False:
+            self.step = 0
+        else:
+            self.step = kw['step']
+            self.color = kw['color']
+            self.pos = kw['pos']
+            self.vel = kw['vel']
+            self.COORDS = []
 
-        self.step = kw['step']
-        self.pos = kw['pos']
-        self.vel = kw['vel']
-        self.COORDS = []
+            self.interect = i.Interaction(x0=self.pos[0],
+                                        vx0=self.vel[0],
+                                        y0=self.pos[1],
+                                        vy0=self.vel[1])
 
-        self.interect = i.Interaction(x0=self.pos[0],
-                                      vx0=self.vel[0],
-                                      y0=self.pos[1],
-                                      vy0=self.vel[1])
-
-        for j in range(self.step):
-            self.COORDS.append(
-                (float(self.interect.solve_func()[0][j])*100+250,
-                 float(self.interect.solve_func()[1][j])*100+250))
+            for j in range(self.step):
+                self.COORDS.append(
+                    (float(self.interect.solve_func()[0][j])*100+250,
+                    float(self.interect.solve_func()[1][j])*100+250))
 
     def draw(self):
+        self.canvas.add(self.color)
         self.ellipse = Ellipse(pos=self.pos, size=(15, 15))
-        self.ellipse_c = Ellipse(pos=(250, 250), size=(50, 50))
+        # self.ellipse_c = Ellipse(pos=(250, 250), size=(50, 50))
         self.canvas.add(self.ellipse)
-        self.canvas.add(self.ellipse_c)
+        # self.canvas.add(self.ellipse_c)
 
     def move(self, c):
         self.pos = Vector(self.COORDS[c])
@@ -50,8 +56,10 @@ class Move(Widget):
         self.counter += 1
         self.object.move(self.counter)
 
-    def create(self, pos, vel):
-        self.object = Object(step=self.n,
+    def create(self, color, pos, vel):
+        self.object = Object(key=True,
+                             color=color,
+                             step=self.n,
                              pos=pos,
                              vel=vel)
         self.object.draw()
@@ -61,7 +69,7 @@ class Move(Widget):
 class PainterWidget(Widget):
     def on_touch_down(self, touch):
         with self.canvas:
-            Color(1, randint(0,1), randint(0,1), 1)
+            self.color = Color(1, randint(0,1), randint(0,1), 1)
             self.ellipse = Ellipse(pos=(touch.x, touch.y), size = (15,15))
 
         self.x1 = touch.x
@@ -105,7 +113,8 @@ class PainterWidget(Widget):
 
         # задавание данных объекту
         self.object = Move()
-        self.object.create(pos=(((self.x1-250)/100)*i.ae, ((self.y1-250)/100)*i.ae),
+        self.object.create(color=self.color,
+                           pos=(((self.x1-250)/100)*i.ae, ((self.y1-250)/100)*i.ae),
                            vel=(self.vx, self.vy))
         Clock.schedule_interval(self.object.update, .04)
         self.parent.add_widget(self.object)
@@ -114,4 +123,6 @@ class PainterWidget(Widget):
 class PlanetApp(App):
     def build(self):
         return PainterWidget()
-PlanetApp().run()
+
+if __name__ == '__main__':
+    PlanetApp().run()
