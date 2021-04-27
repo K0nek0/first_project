@@ -13,31 +13,26 @@ Builder.load_file('center.kv')
 class Object(Widget):
     def __init__(self, key, **kw):
         super(Object, self).__init__()
-        if key == False:
-            self.step = 0
-        else:
-            self.step = kw['step']
-            self.color = kw['color']
-            self.pos = kw['pos']
-            self.vel = kw['vel']
-            self.COORDS = []
+        self.step = kw['step']
+        self.color = kw['color']
+        self.pos = kw['pos']
+        self.vel = kw['vel']
+        self.COORDS = []
 
-            self.interect = i.Interaction(x0=self.pos[0],
-                                        vx0=self.vel[0],
-                                        y0=self.pos[1],
-                                        vy0=self.vel[1])
+        self.interect = i.Interaction(x0=self.pos[0],
+                                    vx0=self.vel[0],
+                                    y0=self.pos[1],
+                                    vy0=self.vel[1])
 
-            for j in range(self.step):
-                self.COORDS.append(
-                    (float(self.interect.solve_func()[0][j])*100+250,
-                    float(self.interect.solve_func()[1][j])*100+250))
+        for j in range(self.step):
+            self.COORDS.append(
+                (float(self.interect.solve_func()[0][j])*100+250,
+                float(self.interect.solve_func()[1][j])*100+250))
 
     def draw(self):
         self.canvas.add(self.color)
         self.ellipse = Ellipse(pos=self.pos, size=(15, 15))
-        # self.ellipse_c = Ellipse(pos=(250, 250), size=(50, 50))
         self.canvas.add(self.ellipse)
-        # self.canvas.add(self.ellipse_c)
 
     def move(self, c):
         self.pos = Vector(self.COORDS[c])
@@ -119,10 +114,11 @@ class PainterWidget(Widget):
         Clock.schedule_interval(self.object.update, .04)
         self.parent.add_widget(self.object)
 
-
 class PlanetApp(App):
     def build(self):
         return PainterWidget()
 
 if __name__ == '__main__':
     PlanetApp().run()
+
+#self.center
