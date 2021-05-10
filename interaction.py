@@ -11,6 +11,8 @@ T = 365
 t_end = 2 * 24 * 3600 * 365
 t = np.linspace(0, t_end, T)
 k = 200
+r = 15
+
 
 class Interaction:
     def __init__(self, x0, vx0, y0, vy0):
