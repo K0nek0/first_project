@@ -34,8 +34,8 @@ class Object(Widget):
 
         for j in range(self.step):
             self.COORDS.append(
-                (float(self.interect.solve_func()[0][j])*100+225,
-                 float(self.interect.solve_func()[1][j])*100+419))
+                (float(self.interect.solve_func(j)[0])*100+225,
+                 float(self.interect.solve_func(j)[1])*100+419))
 
     def draw(self):
         self.canvas.add(self.color)
@@ -73,12 +73,21 @@ class Painter(Widget):
     def __init__(self, **kw):
         super(Painter, self).__init__(**kw)
         Window.bind(mouse_pos=self.mouse_pos)
+        self.start = []
         
     def mouse_pos(self, window, pos):
         if DRAGGING == True:
             self.drawLine(pos)
 
     def drawLine(self, mPos):
+        self.canvas.after.clear()
+
+        self.start.append(mPos[0])
+        self.start.append(mPos[1])
+
+        with self.canvas.after:
+            self.label = Label(text=f'Скорость: {int(mPos[0]/3), int(mPos[1]/4)}', pos=(self.start[0], self.start[1]))
+
         self.canvas.clear()
         with self.canvas:
             self.line = Line(points=[DRAG_START[0]+i.r/2, DRAG_START[1]+i.r/2, mPos[0], mPos[1]],
@@ -88,9 +97,6 @@ class Painter(Widget):
         with self.canvas.before:
             self.color = Color(1, randint(0,1), randint(0,1), 1)
             self.ellipse = Ellipse(pos=(touch.x, touch.y), size=(i.r, i.r))
-
-        with self.canvas.after:
-            self.label = Label(text='Скорость: {self.v_modul}', pos=(touch.x, touch.y))
 
         self.x1 = touch.x
         self.y1 = touch.y
@@ -130,7 +136,6 @@ class Painter(Widget):
             self.sin_phi = 0
 
         self.v_modul = i.k*self.vector_modul
-        print(self.v_modul)
 
         # скорости
         self.vx = self.v_modul*self.cos_phi

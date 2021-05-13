@@ -9,7 +9,7 @@ y_c = 0
 
 T = 365
 t_end = 2 * 24 * 3600 * 365
-t = np.linspace(0, t_end, T)
+t = np.linspace(0, t_end, T+1)
 k = 200
 r = 15
 
@@ -20,6 +20,7 @@ class Interaction:
         self.vx0 = vx0
         self.y0 = y0
         self.vy0 = vy0
+        self.s0 = self.x0, self.vx0, self.y0, self.vy0
 
     def func(self, s, t):
         x, vx, y, vy = s
@@ -32,11 +33,15 @@ class Interaction:
 
         return dxdt, dvxdt, dydt, dvydt
 
-    def solve_func(self):
-        s0 = self.x0, self.vx0, self.y0, self.vy0
-        sol = odeint(self.func, s0, t)
+    def solve_func(self, i):
+       
+        sol = odeint(self.func, self.s0, (t[i], t[i+1]))
 
-        self.x = sol[:, 0]
-        self.y = sol[:, 2]
+        self.x = sol[1, 0]
+        self.y = sol[1, 2]
+        self.vx = sol[1, 1]
+        self.vy = sol[1, 3]
+
+        self.s0 = self.x, self.vx, self.y, self.vy
 
         return self.x / ae, self.y / ae
