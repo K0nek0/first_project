@@ -80,13 +80,33 @@ class Painter(Widget):
             self.drawLine(pos)
 
     def drawLine(self, mPos):
+        self.mPos = mPos
+
+        # x и y векторы 
+        self.x_vector = self.x1 - self.mPos[0]
+        self.y_vector = self.y1 - self.mPos[1]
+
+        # модуль векторов
+        self.vector_modul = (self.x_vector**2+self.y_vector**2)**(1/2)
+
+        try:
+            self.cos_phi = self.x_vector/self.vector_modul
+        except ZeroDivisionError:
+            self.cos_phi = 0
+        try:
+            self.sin_phi = self.y_vector/self.vector_modul
+        except ZeroDivisionError:
+            self.sin_phi = 0
+
+        self.v_modul = i.k*self.vector_modul
+
+        # скорости
+        self.vx = self.v_modul*self.cos_phi
+        self.vy = self.v_modul*self.sin_phi
+
         self.canvas.after.clear()
-
-        self.start.append(mPos[0])
-        self.start.append(mPos[1])
-
         with self.canvas.after:
-            self.label = Label(text=f'Скорость: {int(mPos[0]/3), int(mPos[1]/4)}', pos=(self.start[0], self.start[1]))
+            self.label = Label(text=f'Скорость: {int(self.v_modul)} м/с', pos=(self.x1, self.y1))
 
         self.canvas.clear()
         with self.canvas:
@@ -100,48 +120,16 @@ class Painter(Widget):
 
         self.x1 = touch.x
         self.y1 = touch.y
-        # print('x1_self: ',self.x1)
-        # print('y1_self: ',self.y1)
 
         global DRAGGING, DRAG_START
         DRAGGING = True
         DRAG_START = touch.pos
 
     def on_touch_up(self, touch):
-        self.x2 = touch.x
-        self.y2 = touch.y
-
         # убирание начальных элементов
         self.canvas.children.remove(self.line)
         self.canvas.before.remove(self.ellipse)
         self.canvas.after.clear()
-        
-        # x и y векторы 
-        self.x_vector = self.x1 - self.x2
-        self.y_vector = self.y1 - self.y2
-        # print('x2_self: ',self.x2)
-        # print('y2_self: ',self.y2)
-
-        # модуль векторов
-        self.vector_modul = (self.x_vector**2+self.y_vector**2)**(1/2)
-
-        try:
-            self.cos_phi = self.x_vector/self.vector_modul
-        except ZeroDivisionError:
-            self.cos_phi = 0
-
-        try:
-            self.sin_phi = self.y_vector/self.vector_modul
-        except ZeroDivisionError:
-            self.sin_phi = 0
-
-        self.v_modul = i.k*self.vector_modul
-
-        # скорости
-        self.vx = self.v_modul*self.cos_phi
-        self.vy = self.v_modul*self.sin_phi
-        # print('vx: ',self.vx)
-        # print('vy: ',self.vy)
 
         # задавание данных объекту
         self.object = Move()
