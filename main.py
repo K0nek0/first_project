@@ -73,40 +73,37 @@ class Painter(Widget):
     def __init__(self, **kw):
         super(Painter, self).__init__(**kw)
         Window.bind(mouse_pos=self.mouse_pos)
-        self.start = []
         
     def mouse_pos(self, window, pos):
         if DRAGGING == True:
             self.drawLine(pos)
 
     def drawLine(self, mPos):
-        self.mPos = mPos
-
         # x и y векторы 
-        self.x_vector = self.x1 - self.mPos[0]
-        self.y_vector = self.y1 - self.mPos[1]
+        x_vector = self.x1 - mPos[0]
+        y_vector = self.y1 - mPos[1]
 
         # модуль векторов
-        self.vector_modul = (self.x_vector**2+self.y_vector**2)**(1/2)
+        vector_modul = (x_vector**2+y_vector**2)**(1/2)
 
         try:
-            self.cos_phi = self.x_vector/self.vector_modul
+            cos_phi = x_vector/vector_modul
         except ZeroDivisionError:
-            self.cos_phi = 0
+            cos_phi = 0
         try:
-            self.sin_phi = self.y_vector/self.vector_modul
+            sin_phi = y_vector/vector_modul
         except ZeroDivisionError:
-            self.sin_phi = 0
+            sin_phi = 0
 
-        self.v_modul = i.k*self.vector_modul
+        v_modul = i.k*vector_modul
 
         # скорости
-        self.vx = self.v_modul*self.cos_phi
-        self.vy = self.v_modul*self.sin_phi
+        self.vx = v_modul*cos_phi
+        self.vy = v_modul*sin_phi
 
         self.canvas.after.clear()
         with self.canvas.after:
-            self.label = Label(text=f'Скорость: {int(self.v_modul)} м/с', pos=(self.x1, self.y1))
+            self.label = Label(text=f'Скорость: {int(v_modul)} м/с', pos=(self.x1, self.y1))
 
         self.canvas.clear()
         with self.canvas:
