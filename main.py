@@ -9,7 +9,9 @@ from kivy.clock import Clock
 from random import randint
 
 from kivy.config import Config
-Config.set('graphics', 'resizable', 1)
+Config.set('graphics', 'resizable', 0)
+Config.set('graphics', 'width', i.w)
+Config.set('graphics', 'height', i.h)
 
 from kivy.lang import Builder
 Builder.load_file('center.kv')
@@ -34,8 +36,8 @@ class Object(Widget):
 
         for j in range(self.step):
             self.COORDS.append(
-                (float(self.interect.solve_func(j)[0])*100+225,
-                 float(self.interect.solve_func(j)[1])*100+419))
+                (float(self.interect.solve_func(j)[0])*100+i.w,
+                 float(self.interect.solve_func(j)[1])*100+i.h))
 
     def draw(self):
         self.canvas.add(self.color)
@@ -103,7 +105,8 @@ class Painter(Widget):
 
         self.canvas.after.clear()
         with self.canvas.after:
-            self.label = Label(text=f'Скорость: {int(v_modul)} м/с', pos=(self.x1, self.y1))
+            self.label = Label(text=f'Скорость: {int(v_modul)} м/с',
+                               pos=(self.x1, self.y1))
 
         self.canvas.clear()
         with self.canvas:
@@ -131,7 +134,7 @@ class Painter(Widget):
         # задавание данных объекту
         self.object = Move()
         self.object.create(color=self.color,
-                           pos=(((self.x1-225)/100)*i.ae, ((self.y1-419)/100)*i.ae),
+                           pos=(((self.x1-i.w)/100)*i.ae, ((self.y1-i.h)/100)*i.ae),
                            vel=(self.vx, self.vy))
         Clock.schedule_interval(self.object.update, .04)
         self.parent.add_widget(self.object)
